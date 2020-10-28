@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Hello, Mixa</title>
+</head>
+<body style="height: 100vh">
+
+<!--          таблица юзеров-->
+
+<div class="container-fluid h-100">
+        <nav class="navbar navbar-dark bg-dark w-100">
+            <a class="navbar-brand" href="#">Admin</a>
+            <a class="navbar-brand" href="/logout">Logout</a>
+        </nav>
+        <div class="row no-gutters h-100">
+            <div class="col-2 h-100">
+                <div class="list-group">
+                    <a href="#!" class="list-group-item active"  id="admin">Admin</a>
+                    <a href="#!" class="list-group-item list-group-item-action" id="user">User</a>
+                </div>
+            </div>
+            <div class="col-10 bg-light p-5 h-100" id="usersAll">
+
+                <h2>Admin panel</h2>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div>
+                            <h5 class="border p-3 mb-0">All users</h5>
+                            <table class="table table-striped bg-white pl-3">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Password</th>
+                                    <th>Role</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="user : ${xxx}">
+                                    <td th:text="${user.id}"></td>
+                                    <td th:text="${user.username}"></td>
+                                    <td th:text="${user.password}"></td>
+                                    <td th:text="${user.authoritiesString()}"></td>
+                                    <td><button type="button" class="btn btn-primary" th:onclick="'javascript:updateUser(\'' + ${user.getId()} +'\');'">Edit</button></td>
+                                    <td><button type="button" class="btn btn-danger" th:onclick="'javascript:deleteUser(\'' + ${user.getId()} +'\');'">Dalete</button></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div>
+                            <h5 class="border p-3 mb-0">Add new user</h5>
+                            <div class="d-flex justify-content-center  bg-white">
+                                <form th:method="POST" action="/admin/createNewUser">
+                                    <div class="form-group">
+                                        <label for="nameUserInput">Name input</label>
+                                        <input type="text" name="username" id="nameUserInput" class="form-control" placeholder="Name" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password input</label>
+                                        <input type="text"  name="password" id="password" class="form-control" placeholder="Password" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="disabledSelect">ROLE menu</label>
+                                        <select id="disabledSelect"  multiple size="2" name="roles" class="form-control">
+                                            <option  value="ADMIN">ADMIN select</option>
+                                            <option  value="USER">USER select</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Add new user</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-10 bg-light p-5 h-100" id="userOne" style="display: none">
+
+                <h2>User information-page</h2>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div>
+                            <h5 class="border p-3 mb-0">About user</h5>
+                            <table class="table table-striped bg-white pl-3">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Password</th>
+                                    <th>Role</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="user : ${user}">
+                                    <td th:text="${user.id}"></td>
+                                    <td th:text="${user.username}"></td>
+                                    <td th:text="${user.password}"></td>
+                                    <td th:text="${user.authoritiesString()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModal3Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModal3Label">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="target">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+
+<script>
+    function deleteUser(id) {
+        $.ajax({
+            url: "/admin/deleteUser/" + id,
+            success: function (response) {
+                console.log(response);
+                $('#target').html(response);
+                $('.modal').modal('show');
+            }
+        });
+    }
+</script>
+
+<script>
+    function updateUser(id) {
+        $.ajax({
+            url: "/admin/updates/" + id,
+            success: function (response) {
+                console.log(response);
+                $('#target').html(response);
+                $('.modal').modal('show');
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function (){
+        $('#admin').on('click', function (){
+            $('#usersAll').css('display' , 'block');
+            $('#userOne').css('display' , 'none');
+        })
+    })
+</script>
+
+<script>
+    $(document).ready(function (){
+        $('#user').on('click', function (){
+            $('#userOne').css('display' , 'block');
+            $('#usersAll').css('display' , 'none');
+        })
+    })
+</script>
+
+</body>
+</html>
+
+
+
+
+
+<!--<script>-->
+<!--    $(document).ready(function (){-->
+<!--        $.ajax({-->
+<!--            url: "/admin/usersAll",-->
+<!--            success: function (response){-->
+<!--                $('#usersAll').html(response);-->
+<!--            }-->
+<!--        })-->
+<!--    })-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    $("#updateNewUser").click(function () {-->
+<!--        $.post({-->
+<!--            url: "/admin/updatesUserNew",-->
+<!--            data: {-->
+<!--                'id': '${id}',-->
+<!--                'name': '${username}',-->
+<!--                'password': '${password}',-->
+<!--                'roles': '${roles}'-->
+<!--            },-->
+<!--            success: function (response) {-->
+<!--                console.log(response);-->
+<!--                $('#target').html(response);-->
+<!--                $('.modal').modal('hide');-->
+<!--            }-->
+<!--        })-->
+<!--    })-->
+
+<!-- </script>-->
+
+<!--<script>-->
+<!--    function delUserItem(id) {-->
+<!--        $.ajax({-->
+<!--            url: "/admin/delUserItem/" + id,-->
+<!--            success: function (response) {-->
+<!--                console.log(response);-->
+<!--                // $('#target').attr('data-id', id);-->
+<!--                // $('#target').html(response);-->
+<!--                $('.modal').modal('hide');-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+<!--</script>-->
